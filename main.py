@@ -11,10 +11,16 @@ FEEDS = [
 
 def process_feed():
     for feed_url in FEEDS:
-        print(f"\n📡 Fetching feed: {feed_url}")
+        print(f"\n Fetching feed: {feed_url}")
         items = fetch_feed(feed_url)
 
         for item in items[:3]:  # pick the first 3 from each feed
+            link = item("link")
+
+            if has_been_posted(link):
+                print("Skipping, already posted:", link)
+                continue
+
             summary = summarize_text(item["summary"])
 
             message = f"{item['title']}\n\n{summary}\n\n{item['link']}"
@@ -24,4 +30,5 @@ def process_feed():
 
             print("Posted:", item["title"])
 
+            mark_as_posted(link)
 process_feed()
