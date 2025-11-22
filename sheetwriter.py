@@ -5,3 +5,9 @@ scope = ["https://spreadsheets.google.com/feeds",
          "https://www.googleapis.com/auth/drive"]
 creds = ServiceAccountCredentials.from_json_keyfile_name("service_account.json", scope)
 client = gspread.authorize(creds)
+
+sheet = client.open("Media Automation").sheet1
+
+def writetosheet(row_data):
+    all_links = sheet.col_values(8)
+    if row_data.get("link") in all_links
