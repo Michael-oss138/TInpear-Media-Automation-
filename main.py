@@ -2,6 +2,7 @@ from feed_reader import fetch_feed
 from ai_processor import summarize_text
 from twitter_sender import post_to_twitter
 from linkedin_sender import post_to_linkedin
+from database import has_been_posted, mark_as_posted
 
 FEEDS = [
     "https://www.wired.com/feed/category/ai/",
@@ -11,11 +12,11 @@ FEEDS = [
 
 def process_feed():
     for feed_url in FEEDS:
-        print(f"\n Fetching feed: {feed_url}")
+        print(f"\nFetching feed: {feed_url}")
         items = fetch_feed(feed_url)
 
         for item in items[:3]:  # pick the first 3 from each feed
-            link = item("link")
+            link = item["link"]
 
             if has_been_posted(link):
                 print("Skipping, already posted:", link)
