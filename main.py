@@ -1,8 +1,9 @@
-from feed_reader import fetch_feed
-from ai_processor import summarize_text
-from twitter_sender import post_to_twitter
-from linkedin_sender import post_to_linkedin
-from database import has_been_posted, mark_as_posted
+from feedreader import fetch_feed
+from llmprocessor import summarize_text, hashtagsgeneration
+#from twitter_sender import post_to_twitter
+#from linkedin_sender import post_to_linkedin
+from sheetwriter import writetosheet
+#from database import has_been_posted, mark_as_posted
 
 FEEDS = [
     "https://www.wired.com/feed/category/ai/",
@@ -12,24 +13,27 @@ FEEDS = [
 
 def process_feed():
     for feed_url in FEEDS:
-        print(f"\nFetching feed: {feed_url}")
+        print("\nFetching feed: {}".format(feed_url))
         items = fetch_feed(feed_url)
 
-        for item in items[:3]:  # pick the first 3 from each feed
-            link = item["link"]
-
-            if has_been_posted(link):
-                print("Skipping, already posted:", link)
-                continue
-
+        for item in items[:3]: 
             summary = summarize_text(item["summary"])
+            hashtags = generate_hashtags(item["summary"])
+            formatted = format_for_platforms(item["title"], summary, hashtags)
 
-            message = f"{item['title']}\n\n{summary}\n\n{item['link']}"
 
-            post_to_twitter(message)
-            post_to_linkedin(message)
+            write_to_sheet({
+                "title": item["title"],
+                "summary": summary,
+                "twitter": formatted["twitter"],
+                "linkedin": formatted["linkedin"],
+                "instagram": formatted["instagram"],
+                "facebook": formatted["facebook"],
+                "hashtags": hashtags,
+                "link": item["link"]
+            })
 
-            print("Posted:", item["title"])
+    print("\nAll posts are ready in the Google Sheet!")
 
-            mark_as_posted(link)
-process_feed()
+if __name__ == "__main__":
+    process_feed()

@@ -1,3 +1,4 @@
 .env
 .vscode/
-tinpear-media-automation-e833188130b0.json
+service_account.json
+__pycache__/
