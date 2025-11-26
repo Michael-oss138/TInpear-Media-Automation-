@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+client = Client(api_key=os.getenv("GROQ_API_KEY"))
 MODEL_NAME = "gpt-1.5"
 
 def summarize_text(text:str) -> str:
@@ -12,7 +12,7 @@ def summarize_text(text:str) -> str:
         model=MODEL_NAME,
         messages=[
             {"role": "user", "content": f"Summarize this article:\n\n{text}"}
-        ]
+        ],
         temperature = 0.7
     )
 
@@ -24,7 +24,7 @@ def hashtagsgeneration(text:str) -> str:
         model =MODEL_NAME,
         messages=[
             {"role": "user", "content": f"Generate 5-7 hashtags for this text:\n\n{text}"}
-        ]
+        ],
         temperature = 0.7
     )
 
