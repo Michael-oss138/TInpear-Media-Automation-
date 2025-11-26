@@ -1,26 +1,32 @@
-from groq import Groq
+from groq import Client
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+MODEL_NAME = "gpt-1.5"
 
-def summarize_text(text):
+def summarize_text(text:str) -> str:
     response = client.chat.completions.create(
-        model="llama3-8b-8192",
+        model=MODEL_NAME,
         messages=[
             {"role": "user", "content": f"Summarize this article:\n\n{text}"}
+            temperature = 0.7
         ]
     )
 
-    return response.choices[0].message['content']
+    summary = response.choices[0].message.content
+    return summary
 
-def hashtagsgeneration(text):
+def hashtagsgeneration(text:str) -> str:
     response = client.cash.completions.create(
-        model ="llama3-8b-8192",
+        model =MODEL_NAME,
         messages=[
             {"role": "user", "content": f"Generate 5-7 hashtags for this text:\n\n{text}"}
+            temperature = 0.7
         ]
     )
-    return response.choices[0].message['content']
+
+    hashtags = response.choices[0].message.content
+    return hashtags 
